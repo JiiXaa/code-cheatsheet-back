@@ -112,7 +112,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// check if someone is logged in
+// check if someone is logged in (if not logged in return null, and throw error with null also)
 router.get('/loggedIn', (req, res) => {
   try {
     const token = req.cookies.token;
@@ -127,15 +127,10 @@ router.get('/loggedIn', (req, res) => {
   }
 });
 
-router.get('/loggedIn', (req, res) => {
+router.get('/logOut', (req, res) => {
   try {
-    const token = req.cookies.token;
-
-    if (!token) return res.json(null);
-
-    const validatedUser = jwt.verify(token, process.env.JWT_SECRET);
-
-    res.json(validatedUser.id);
+    // we cannot remove cookie from a front end app / javascript. Because it is HTTP only. That is why we send HTTP request to the server.
+    res.clearCookie('token').send();
   } catch (err) {
     return res.json(null);
   }
