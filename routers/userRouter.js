@@ -57,8 +57,20 @@ router.post('/', async (req, res) => {
       },
       process.env.JWT_SECRET
     );
-
-    res.cookie('token', token, { httpOnly: true }).send();
+    // need to add sameSite: 'none' and secure: 'true' to be able sending cookies to external web hosting's i.e. Netlify
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        sameSite:
+          process.env.NODE_ENV === 'development'
+            ? 'lax'
+            : process.env.NODE_ENV === 'production' && 'none',
+        secure:
+          process.env.NODE_ENV === 'development'
+            ? false
+            : process.env.NODE_ENV === 'production' && true,
+      })
+      .send();
   } catch (err) {
     res.status(500).send();
   }
@@ -106,7 +118,21 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    res.cookie('token', token, { httpOnly: true }).send();
+    // need to add sameSite: 'none' and secure: 'true' to be able sending cookies to external web hosting's i.e. Netlify
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        // default process.env.NODE_ENV is development, production string is stored in CONFIG VARS on the Heroku
+        sameSite:
+          process.env.NODE_ENV === 'development'
+            ? 'lax'
+            : process.env.NODE_ENV === 'production' && 'none',
+        secure:
+          process.env.NODE_ENV === 'development'
+            ? false
+            : process.env.NODE_ENV === 'production' && true,
+      })
+      .send();
   } catch (err) {
     res.status(500).send();
   }
