@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 5000;
+
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -19,7 +21,7 @@ app.use(
 );
 app.use(cookieParser());
 
-app.listen(5000, () => console.log('server started on port 5000'));
+app.listen(PORT, () => console.log(`server started on port ${PORT}`));
 
 // set up routers
 
