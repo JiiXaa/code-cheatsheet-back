@@ -156,7 +156,22 @@ router.get('/loggedIn', (req, res) => {
 router.get('/logOut', (req, res) => {
   try {
     // we cannot remove cookie from a front end app / javascript. Because it is HTTP only. That is why we send HTTP request to the server.
-    res.clearCookie('token').send();
+    // clearCookie token works only for development, for production needs more settings
+    // res.clearCookie('token').send();
+    res
+      .cookie('token', '', {
+        httpOnly: true,
+        sameSite:
+          process.env.NODE_ENV === 'development'
+            ? 'lax'
+            : process.env.NODE_ENV === 'production' && 'none',
+        secure:
+          process.env.NODE_ENV === 'development'
+            ? false
+            : process.env.NODE_ENV === 'production' && true,
+        expires: new Date(0),
+      })
+      .send();
   } catch (err) {
     return res.json(null);
   }
